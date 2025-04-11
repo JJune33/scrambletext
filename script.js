@@ -18,7 +18,7 @@ function scrambleText(text) {
     .join("");
 }
 
-// Unscramble functie met animatie
+// Unscramble functie met snellere animatie
 function unscrambleText() {
   const scrambledArray = textElement.textContent.split("");
   const targetArray = originalText.split("");
@@ -28,20 +28,20 @@ function unscrambleText() {
   rescrambleButton.style.display = "none";
 
   const interval = setInterval(() => {
-    let index;
-    do {
-      index = Math.floor(Math.random() * scrambledArray.length);
-    } while (completedIndexes.has(index) || !scrambledArray[index].match(/./));
+    for (let i = 0; i < 3; i++) {
+      let index;
+      do {
+        index = Math.floor(Math.random() * scrambledArray.length);
+      } while (
+        completedIndexes.has(index) ||
+        !scrambledArray[index].match(/./)
+      );
 
-    const currentChar = scrambledArray[index];
-    const targetChar = targetArray[index];
-
-    if (currentChar !== targetChar) {
-      scrambledArray[index] = targetChar;
-      textElement.textContent = scrambledArray.join("");
+      scrambledArray[index] = targetArray[index];
+      completedIndexes.add(index);
     }
 
-    completedIndexes.add(index);
+    textElement.textContent = scrambledArray.join("");
 
     if (completedIndexes.size === scrambledArray.length) {
       clearInterval(interval);
@@ -50,7 +50,7 @@ function unscrambleText() {
   }, 5);
 }
 
-// Rescramble met animatie
+// Rescramble functie met snellere animatie
 function rescrambleText() {
   const scrambledArray = textElement.textContent.split("");
   let completedIndexes = new Set();
@@ -59,19 +59,24 @@ function rescrambleText() {
   rescrambleButton.style.display = "none";
 
   const interval = setInterval(() => {
-    let index;
-    do {
-      index = Math.floor(Math.random() * scrambledArray.length);
-    } while (completedIndexes.has(index));
+    for (let i = 0; i < 3; i++) {
+      let index;
+      do {
+        index = Math.floor(Math.random() * scrambledArray.length);
+      } while (completedIndexes.has(index));
 
-    const currentChar = scrambledArray[index];
+      const currentChar = scrambledArray[index];
 
-    if (currentChar.match(/[a-zA-Z]/)) {
-      scrambledArray[index] = String.fromCharCode(currentChar.charCodeAt(0) + 1);
-      textElement.textContent = scrambledArray.join("");
+      if (currentChar.match(/[a-zA-Z]/)) {
+        scrambledArray[index] = String.fromCharCode(
+          currentChar.charCodeAt(0) + 1
+        );
+      }
+
+      completedIndexes.add(index);
     }
 
-    completedIndexes.add(index);
+    textElement.textContent = scrambledArray.join("");
 
     if (completedIndexes.size === scrambledArray.length) {
       clearInterval(interval);
@@ -80,14 +85,13 @@ function rescrambleText() {
   }, 5);
 }
 
-// Begin met gescramblde tekst
+// ✅ Begin met gescramblde tekst
 textElement.textContent = scrambleText(originalText);
 
-// Toon juiste knop bij start
+// ✅ Toon juiste knop bij start
 unscrambleButton.style.display = "inline-block";
 rescrambleButton.style.display = "none";
 
-// Knoppen activeren
+// ✅ Knoppen activeren
 unscrambleButton.addEventListener("click", unscrambleText);
 rescrambleButton.addEventListener("click", rescrambleText);
-
