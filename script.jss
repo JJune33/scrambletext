@@ -1,45 +1,88 @@
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  background-color: #282c34;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  box-sizing: border-box;
+const textElement = document.getElementById("text");
+const unscrambleButton = document.getElementById("unscramble");
+const rescrambleButton = document.getElementById("rescramble");
+
+// Bewaar de originele tekst
+const originalText = textElement.textContent;
+
+// Scramble functie (ASCII +1)
+function scrambleText(text) {
+  return text
+    .split("")
+    .map((char) => {
+      if (char.match(/[a-zA-Z]/)) {
+        return String.fromCharCode(char.charCodeAt(0) + 1);
+      }
+      return char;
+    })
+    .join("");
 }
 
-#text {
-  border: 10px solid lightblue;
-  padding: 20px;
-  font-size: 1rem;
-  margin-bottom: 20px;
-  font-family: 'Courier New', Courier, monospace;
-  letter-spacing: 0.05em;
-  max-width: 800px;
-  white-space: pre-wrap;
+// Unscramble functie met animatie
+function unscrambleText() {
+  const scrambledArray = textElement.textContent.split("");
+  const targetArray = originalText.split("");
+  let completedIndexes = new Set();
+
+  unscrambleButton.style.display = "none";
+  rescrambleButton.style.display = "none";
+
+  const interval = setInterval(() => {
+    let index;
+    do {
+      index = Math.floor(Math.random() * scrambledArray.length);
+    } while (completedIndexes.has(index) || !scrambledArray[index].match(/./));
+
+    const currentChar = scrambledArray[index];
+    const targetChar = targetArray[index];
+
+    if (currentChar !== targetChar) {
+      scrambledArray[index] = targetChar;
+      textElement.textContent = scrambledArray.join("");
+    }
+
+    completedIndexes.add(index);
+
+    if (completedIndexes.size === scrambledArray.length) {
+      clearInterval(interval);
+      rescrambleButton.style.display = "inline-block";
+    }
+  }, 5);
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  margin: 5px;
-  cursor: pointer;
-  border: none;
-  background-color: #61dafb;
-  color: #282c34;
-  border-radius: 5px;
-  transition: background-color 0.3s;
+// Rescramble met animatie
+function rescrambleText() {
+  const scrambledArray = textElement.textContent.split("");
+  let completedIndexes = new Set();
+
+  unscrambleButton.style.display = "none";
+  rescrambleButton.style.display = "none";
+
+  const interval = setInterval(() => {
+    let index;
+    do {
+      index = Math.floor(Math.random() * scrambledArray.length);
+    } while (completedIndexes.has(index));
+
+    const currentChar = scrambledArray[index];
+
+    if (currentChar.match(/[a-zA-Z]/)) {
+      scrambledArray[index] = String.fromCharCode(currentChar.charCodeAt(0) + 1);
+      textElement.textContent = scrambledArray.join("");
+    }
+
+    completedIndexes.add(index);
+
+    if (completedIndexes.size === scrambledArray.length) {
+      clearInterval(interval);
+      unscrambleButton.style.display = "inline-block";
+    }
+  }, 5);
 }
 
-button:hover {
-  background-color: #21a1f1;
-}
+// Begin met gescramblde tekst
+textElement.textContent = scrambleText(originalText);
 
-#rescramble {
-  display: none;
-}
+// Knoppen activeren
+unscrambleButton.addEventListener("click", unscrambleText);
+rescrambleButton.addEventListener("click", rescrambleText);
