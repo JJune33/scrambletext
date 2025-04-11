@@ -83,6 +83,11 @@ function rescrambleText() {
 // Begin met gescramblde tekst
 textElement.textContent = scrambleText(originalText);
 
+// Toon juiste knop bij start
+unscrambleButton.style.display = "inline-block";
+rescrambleButton.style.display = "none";
+
 // Knoppen activeren
 unscrambleButton.addEventListener("click", unscrambleText);
 rescrambleButton.addEventListener("click", rescrambleText);
+
