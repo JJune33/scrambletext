@@ -59,7 +59,7 @@ function rescrambleText() {
   rescrambleButton.style.display = "none";
 
   const interval = setInterval(() => {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       let index;
       do {
         index = Math.floor(Math.random() * scrambledArray.length);
